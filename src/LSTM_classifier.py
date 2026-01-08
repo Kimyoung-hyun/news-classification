@@ -14,6 +14,5 @@ class LSTMClassifier(nn.Module):
         embedded = self.dropout(self.embedding(x))
         _, (hidden, _) = self.lstm(embedded)
         
-        # 마지막 hidden state 가져오기 (Bidirectional)
         hidden = self.dropout(torch.cat((hidden[-2,:,:], hidden[-1,:,:]), dim=1))
         return self.fc(hidden)

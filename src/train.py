@@ -47,7 +47,6 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     criterion = nn.CrossEntropyLoss()
 
-    # 6. 실제 학습 실행
     EPOCHS = 10
     print(f"학습 시작 device: {device}")
 
