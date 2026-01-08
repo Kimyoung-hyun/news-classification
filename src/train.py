@@ -7,20 +7,14 @@ import torch.optim as optim
 import numpy as np
 import random
 
-from data.data_processing import data_prcessing
-from data.vocab import build_vocab
-from data.custom_dataset import CustomDataset, collate_batch
-from LSTM_classifier import LSTMClassifier
+from .data.data_processing import data_processing
+from .data.vocab import build_vocab
+from .data.custom_dataset import CustomDataset, collate_batch
+from .LSTM_classifier import LSTMClassifier
 
 def main():
     MIN_FREQ = 2
     BATCH_SIZE = 64
-    
-    INPUT_DIM = len(vocab)
-    EMBED_DIM = 64
-    HIDDEN_DIM = 128
-    OUTPUT_DIM = 4
-    DROPOUT = 0.5
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
@@ -28,10 +22,10 @@ def main():
     SEED = 42
     set_seed(SEED)
     
-    train_df = pd.read_csv("../data/train.csv", header=0, names=['Class Index', 'Title', 'Description'])
-    train_df = data_prcessing(train_df)
+    train_df = pd.read_csv("/data/ephemeral/test/news-classification/data/test.csv", header=0, names=['Class Index', 'Title', 'Description'])
+    train_df = data_processing(train_df)
 
-    test_df = pd.read_csv("../data/test.csv", header=0, names=['Class Index', 'Title', 'Description'])
+    test_df = pd.read_csv("/data/ephemeral/test/news-classification/data/test.csv", header=0, names=['Class Index', 'Title', 'Description'])
 
     vocab = build_vocab(train_df, min_freq=MIN_FREQ)
 
@@ -40,7 +34,13 @@ def main():
 
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, collate_fn=collate_batch)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False, collate_fn=collate_batch)
-
+    
+    INPUT_DIM = len(vocab)
+    EMBED_DIM = 64
+    HIDDEN_DIM = 128
+    OUTPUT_DIM = 4
+    DROPOUT = 0.5
+    
     model = LSTMClassifier(INPUT_DIM, EMBED_DIM, HIDDEN_DIM, OUTPUT_DIM, n_layers=2, dropout=DROPOUT)
 
     model = model.to(device)
@@ -48,7 +48,7 @@ def main():
     criterion = nn.CrossEntropyLoss()
 
     # 6. 실제 학습 실행
-    EPOCHS = 5
+    EPOCHS = 10
     print(f"학습 시작 device: {device}")
 
     for epoch in range(EPOCHS):

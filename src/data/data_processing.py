@@ -12,7 +12,7 @@ def basic_english_normalize(line):
         line = pattern_re.sub(replaced_str, line)
     return line
 
-def data_prcessing(df):
+def data_processing(df):
     # 공백 제거
     df = df.replace(r'^\s*$', np.nan, regex=True)
     df = df.dropna()
